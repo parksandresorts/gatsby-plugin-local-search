@@ -1,6 +1,9 @@
 import path from 'path'
 import fs from 'fs'
 import lunr from 'lunr'
+import lunr_stemmer from 'lunr-languages/lunr.stemmer.support';
+import lunr_sv from 'lunr-languages/lunr.sv';
+import lunr_no from 'lunr-languages/lunr.no';
 import FlexSearch from 'flexsearch'
 import {
   GatsbyNode,
@@ -19,6 +22,10 @@ import {
 } from './types'
 
 const DEFAULT_REF = 'id'
+
+lunr_stemmer(lunr);
+lunr_sv(lunr);
+lunr_no(lunr);
 
 const msg = (input: string) => `gatsby-plugin-local-search - ${input}`
 
@@ -53,6 +60,10 @@ const createLunrIndexExport = (
 
   const index = lunr(function () {
     this.ref(ref)
+
+    this.use(lunr.sv);
+    this.use(lunr.no);
+
     fields.forEach((field) => this.field(field))
     documents.forEach((doc) => this.add(doc))
   })
